@@ -1,5 +1,9 @@
 import { Product } from "./generated/graphql";
 
+export function getProduct(ean: string) {
+  return products.find((p) => p.ean === ean);
+}
+
 export const products: Product[] = [
   {
     ean: "2000570800008",

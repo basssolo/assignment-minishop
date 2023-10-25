@@ -16,19 +16,39 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CreateOrderInput = {
+  customerId: Scalars['ID']['input'];
+  products: Array<OrderedProductInput>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createOrder: Order;
+};
+
+
+export type MutationCreateOrderArgs = {
+  input: CreateOrderInput;
+};
+
 export type Order = {
   __typename?: 'Order';
   customerId: Scalars['String']['output'];
   orderId: Scalars['ID']['output'];
   products: Array<OrderedProduct>;
   timestamp: Scalars['String']['output'];
-  totalSum: Scalars['Int']['output'];
+  totalSum: Scalars['Float']['output'];
 };
 
 export type OrderedProduct = {
   __typename?: 'OrderedProduct';
   amount: Scalars['Int']['output'];
-  ean: Scalars['String']['output'];
+  product: Product;
+};
+
+export type OrderedProductInput = {
+  amount: Scalars['Int']['input'];
+  ean: Scalars['String']['input'];
 };
 
 export type Product = {
@@ -41,8 +61,15 @@ export type Product = {
 
 export type Query = {
   __typename?: 'Query';
+  order?: Maybe<Order>;
   orders: Array<Order>;
   products: Array<Product>;
+};
+
+
+export type QueryOrderArgs = {
+  customerId: Scalars['ID']['input'];
+  orderId: Scalars['ID']['input'];
 };
 
 
@@ -122,11 +149,14 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreateOrderInput: CreateOrderInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Order: ResolverTypeWrapper<Order>;
   OrderedProduct: ResolverTypeWrapper<OrderedProduct>;
+  OrderedProductInput: OrderedProductInput;
   Product: ResolverTypeWrapper<Product>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -135,14 +165,21 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  CreateOrderInput: CreateOrderInput;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  Mutation: {};
   Order: Order;
   OrderedProduct: OrderedProduct;
+  OrderedProductInput: OrderedProductInput;
   Product: Product;
   Query: {};
   String: Scalars['String']['output'];
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createOrder?: Resolver<ResolversTypes['Order'], ParentType, ContextType, RequireFields<MutationCreateOrderArgs, 'input'>>;
 };
 
 export type OrderResolvers<ContextType = any, ParentType extends ResolversParentTypes['Order'] = ResolversParentTypes['Order']> = {
@@ -150,13 +187,13 @@ export type OrderResolvers<ContextType = any, ParentType extends ResolversParent
   orderId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   products?: Resolver<Array<ResolversTypes['OrderedProduct']>, ParentType, ContextType>;
   timestamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  totalSum?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalSum?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type OrderedProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['OrderedProduct'] = ResolversParentTypes['OrderedProduct']> = {
   amount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  ean?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  product?: Resolver<ResolversTypes['Product'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -169,11 +206,13 @@ export type ProductResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  order?: Resolver<Maybe<ResolversTypes['Order']>, ParentType, ContextType, RequireFields<QueryOrderArgs, 'customerId' | 'orderId'>>;
   orders?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType, RequireFields<QueryOrdersArgs, 'customerId'>>;
   products?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
+  Mutation?: MutationResolvers<ContextType>;
   Order?: OrderResolvers<ContextType>;
   OrderedProduct?: OrderedProductResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;

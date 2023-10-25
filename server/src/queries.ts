@@ -3,11 +3,17 @@ import { orders } from "./orderDatabase.js";
 import { products } from "./productDatabase.js";
 
 export const queries: QueryResolvers = {
-  orders: async (_parent, _args, _context) => {
-    // TODO: Calulate sum, only return orders for requested user
-    return orders.map((order) => ({ ...order, totalSum: 0 }));
+  orders: async (_parent, { customerId }, _context) => {
+    return orders
+      .filter((order) => order.customerId === customerId)
+      .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
   },
   products: async (_parent, _args, _context) => {
-    return products;
+    return products.sort((a, b) => a.name.localeCompare(b.name));
+  },
+  order: async (_parent, { customerId, orderId }, _dataSources) => {
+    return orders.find(
+      (o) => o.customerId === customerId && o.orderId === orderId
+    );
   },
 };
