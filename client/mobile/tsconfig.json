@@ -3,8 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "*": ["./src/*"],
-      "generated": ["generated"]
+      "*": ["src/*"],
+      "generated/*": ["../generated/*"]
     }
   }
 }
