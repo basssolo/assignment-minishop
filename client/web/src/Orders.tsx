@@ -10,8 +10,10 @@ const ordersQuery = gql(`
       customerId
       timestamp
       products {
+        product {
+          ean
+        }
         amount
-        ean
       }
       totalSum
     }
